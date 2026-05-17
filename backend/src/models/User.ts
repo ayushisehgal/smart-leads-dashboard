@@ -1,28 +1,31 @@
-import mongoose, { Schema, CallbackError } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { IUser } from '../types';
 
 const UserSchema = new Schema<IUser>(
   {
     name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     password: { type: String, required: true, minlength: 6 },
     role: { type: String, enum: ['admin', 'sales'], default: 'sales' },
   },
   { timestamps: true }
 );
 
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next: (err?: Error) => void) {
   if (!this.isModified('password')) {
-    return next();
+    next();
+    return;
   }
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    return next();
-  } catch (err) {
-    return next(err as CallbackError);
-  }
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 UserSchema.methods.comparePassword = async function (
