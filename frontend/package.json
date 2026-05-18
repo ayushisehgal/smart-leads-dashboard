@@ -4,10 +4,11 @@
   "description": "",
   "main": "tailwind.config.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test"
-  },
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "vercel-build": "react-scripts build"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
